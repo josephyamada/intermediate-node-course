@@ -41,9 +41,8 @@ app.post('/users',(req,res)=>{
     // Store hash in your password DB.
     User.create(
       {
-        name:req.body.newData.name,
-        email:req.body.newData.email,
-        password:hash
+        password:hash,
+        ...req.body.newData
       },
       (err,data)=>{sendResponse(res,err,data)}
       )
@@ -77,3 +76,21 @@ app.route('/users/:id')
     (err,data)=>{sendResponse(res,err,data)})
 
 })
+
+// AUTHENTICATE
+// app.post('/authenticate',(req,res)=>{
+
+//   bcrypt.hash(req.body.newData.password, saltRounds).then(function(hash) {
+//     // Store hash in your password DB.
+//     User.create(
+//       {
+//         name:req.body.newData.name,
+//         email:req.body.newData.email,
+//         password:hash
+//       },
+//       (err,data)=>{sendResponse(res,err,data)}
+//       )
+//   }, 
+//   (err,data)=>{sendResponse(res,err,data)}
+//   );
+// })
