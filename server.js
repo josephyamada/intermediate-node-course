@@ -37,21 +37,19 @@ function sendResponse(res,err,data){
 
 // CREATE
 app.post('/users',(req,res)=>{
-  bcrypt.hash(req.body.newData.password, saltRounds, function(err, hash) {
-    if (err) {
-      sendResponse(res,err,data)
-    } else {
-      // Store hash in your password DB.
-      User.create(
-        {
-          name:req.body.newData.name,
-          email:req.body.newData.email,
-          password:hash
-        },
-        (err,data)=>{sendResponse(res,err,data)}
-        )
-    }
-  });
+  bcrypt.hash(req.body.newData.password, saltRounds).then(function(hash) {
+    // Store hash in your password DB.
+    User.create(
+      {
+        name:req.body.newData.name,
+        email:req.body.newData.email,
+        password:hash
+      },
+      (err,data)=>{sendResponse(res,err,data)}
+      )
+  }, 
+  (err,data)=>{sendResponse(res,err,data)}
+  );
 })
 
 app.route('/users/:id')
