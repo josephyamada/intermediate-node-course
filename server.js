@@ -1,6 +1,8 @@
 const express= require('express');
 const mongoose= require('mongoose');
 const bodyParser= require('body-parser');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const port=8000;
 const app= express();
 
@@ -35,10 +37,21 @@ function sendResponse(res,err,data){
 
 // CREATE
 app.post('/users',(req,res)=>{
-  User.create(
-    {...req.body.newData},
-    (err,data)=>{sendResponse(res,err,data)}
-    )
+  bcrypt.hash(req.body.newData.password, saltRounds, function(err, hash) {
+    if (err) {
+      sendResponse(res,err,data)
+    } else {
+      // Store hash in your password DB.
+      User.create(
+        {
+          name:req.body.newData.name,
+          email:req.body.newData.email,
+          password:hash
+        },
+        (err,data)=>{sendResponse(res,err,data)}
+        )
+    }
+  });
 })
 
 app.route('/users/:id')
